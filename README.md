@@ -1,1 +1,1 @@
-# shopify-image-repo
+# Shopify Data Engineer Challenge
