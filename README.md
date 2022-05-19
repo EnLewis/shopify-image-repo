@@ -17,7 +17,10 @@ python3 app.py
 This startup up will likely throw a couple warnings depending on what your system from tensorflow. Ignore them.
 - The server is hosted on "127.0.0.1:5000" so head over there on whatever browser you like and you should be greated by the home screen
 - On the home screen to upload an image (png or jpg format) press the browse button, select your image, then press upload. This will take a second or two to process.
+![Homepage Screenshot](https://github.com/EnLewis/shopify-image-repo/blob/main/refs/homepage.png)
 - Once the upload completes, if successful, it should add it to a table which displays the filename, remote filepath, and the servers best guess of what the photo you just uploaded was.
+![Table View](https://github.com/EnLewis/shopify-image-repo/blob/main/refs/table.png)
 - You can click `View` to view the image, and see the probabilities of what the server thinks exists in the image.
+![Image Prview](https://github.com/EnLewis/shopify-image-repo/blob/main/refs/preview.png)
 - You can also remove the image from the database via the delete button.
 
