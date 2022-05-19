@@ -6,6 +6,7 @@ import numpy as np
 import os
 
 # Load the pre-built Keras EfficientNet model
+# One could extend this to use models trained by hand or other models using different training sets
 model = EfficientNetB0(weights='imagenet')
 
 # Set batch size for training and validation
