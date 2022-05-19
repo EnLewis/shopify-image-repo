@@ -11,27 +11,42 @@ UPLOAD_FOLDER = '/home/elewis/Projects/shopify/shopify-image-repo/front/static/s
 ALLOWED_EXTENSIONS = set(['png', 'jpeg', 'jpg'])
 
 # TODO: If not exists create database folders
+#db.create_all()
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///image_database.db'
 
 db = SQLAlchemy(app)
-#db.create_all()
 
-class Todo(db.Model):
+class DBImg(db.Model):
+    __tablename__ = "dbimgs"
     id = db.Column(db.Integer, primary_key=True)
-    tags = db.Column(db.String(200), nullable=True)
-    fn = db.Column(db.String(200), nullable=False)
+    tags = db.relationship("Tag", backref="dbimg", lazy="dynamic", cascade="all, delete")
+    
+    best_tag = db.Column(db.String(200), nullable=True)
+    filename = db.Column(db.String(200), nullable=False)
     filepath = db.Column(db.String(200), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
-        return f'<Task {self.id}>'
+        return f'<DBImg {self.id}>'
+
+class Tag(db.Model):
+    __tablename__ = "tags"
+    id = db.Column(db.Integer, primary_key=True)
+    img_id = db.Column(db.Integer, db.ForeignKey('dbimgs.id'))
+    #img = db.relationship("DBImg")
+    
+    tag_name = db.Column(db.String(100), nullable=True)
+    tag_prob = db.Column(db.Numeric(precision=5, asdecimal=True, decimal_return_scale=None))
+    
+    def __repr__(self):
+        return f'<Tag {self.id}>'    
 
 @app.route('/')
 def index():
-    entries = Todo.query.order_by(Todo.date_created).all()
+    entries = DBImg.query.order_by(DBImg.date_created).all()
     return render_template('index.html', entries=entries)
 
 def allowed_file(filename):
@@ -61,14 +76,16 @@ def upload_img():
             # Save thumbnail to disk and process computer vision
             best_guesses = save_to_disk(app.config['UPLOAD_FOLDER'], filename)
             print(" ".join([x[1] for x in best_guesses]))
-            threshold = 0.33
+            threshold = 0
             best_guess = best_guesses[0][1]
-            tags = [ guess[1] for guess in best_guesses if guess[-1] > threshold]
+            tags = [ Tag(tag_name=guess[1], tag_prob=guess[2]) for guess in best_guesses if guess[-1] > threshold]
             
             # Add to database
-            new_entry = Todo(tags=''.join(tags), fn=filename, filepath=filepath)
+            new_entry = DBImg(best_tag=best_guess, filename=filename, filepath=filepath)
+            new_entry.tags.extend(tags)
             try:
                 db.session.add(new_entry)
+                db.session.add_all(tags)
                 db.session.commit()
             except Exception as e:
                 print(e)
@@ -93,9 +110,9 @@ def upload_img():
 
 @app.route('/delete/<int:id>')
 def delete(id):
-    entry_to_delete = Todo.query.get_or_404(id)
+    entry_to_delete = DBImg.query.get_or_404(id)
 
-    delete_from_disk(entry_to_delete.filepath, entry_to_delete.fn)
+    delete_from_disk(entry_to_delete.filepath, entry_to_delete.filename)
     try:
         db.session.delete(entry_to_delete)
         db.session.commit()
@@ -108,9 +125,9 @@ from flask import send_from_directory
 
 @app.route('/view/<int:id>')
 def view(id):
-    entry_to_view = Todo.query.get_or_404(id)
+    entry_to_view = DBImg.query.get_or_404(id)
 
-    return render_template("view.html", entry = entry_to_view)
+    return render_template("view.html", entry = entry_to_view, tags=entry_to_view.tags)
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
@@ -119,4 +136,5 @@ def uploaded_file(filename):
 
 if __name__ == "__main__":
     app.secret_key = "super secret key"
+    db.create_all()
     app.run(debug=True)

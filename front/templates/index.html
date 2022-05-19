@@ -29,9 +29,9 @@
     </thead>
     {% for entry in entries %}
     <tr>
-      <td>{{ entry.fn }}</td>
+      <td>{{ entry.filename }}</td>
       <td>{{ entry.filepath}}</td>
-      <td alt="N/A">{{ entry.tags }}</td>
+      <td alt="N/A">{{ entry.best_tag }}</td>
       <td>
         <a href="/delete/{{entry.id}}">Delete</a>
         <br>

@@ -10,8 +10,8 @@ model = EfficientNetB0(weights='imagenet')
 # Set batch size for training and validation
 batch_size = 32
 
-THMBN_HEIGHT = 32
-THMBN_WIDTH = 32
+THMBN_HEIGHT = 224
+THMBN_WIDTH = 224
 
 
 def save_to_disk(db_dir, img_name):

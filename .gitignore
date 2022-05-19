@@ -130,4 +130,6 @@ dmypy.json
 
 # Custom ignore
 cifar-10-python.tar.gz*
+server_db/
 *.db
+*.jpeg

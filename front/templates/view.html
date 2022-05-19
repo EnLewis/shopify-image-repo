@@ -2,10 +2,26 @@
 
 {% block head %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/view.css') }}">
-<h1>{{ entry.fn }}</h1>
+<h1>{{ entry.filename }}</h1>
 {% endblock %}
 
 {% block body %}
 <!-- <script src="index.js"></script> -->
-<img src="/static/server_db/sources/{{ entry.fn }}" alt="User Image" class="center"/>
+<img src="/static/server_db/sources/{{ entry.filename }}" alt="User Image" class="center" />
+<div>
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Image contains</th>
+                <th>Probability</th>
+            </tr>
+        </thead>
+        {% for tag in tags %}
+        <tr>
+            <td>{{ tag.tag_name }}</td>
+            <td>{{ tag.tag_prob * 100}}%</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
 {% endblock %}
