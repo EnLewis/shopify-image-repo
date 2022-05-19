@@ -1,17 +1,13 @@
 import os
-import random
 
-from flask import Flask, render_template, url_for, flash, request, redirect
-from helper import classify_image, save_to_disk, delete_from_disk
+from flask import Flask, render_template, url_for, flash, request, redirect, send_from_directory
+from helper import save_thumbnaill_and_classify, delete_from_disk
 from werkzeug.utils import secure_filename
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
-UPLOAD_FOLDER = '/home/elewis/Projects/shopify/shopify-image-repo/front/static/server_db/sources'
+UPLOAD_FOLDER = 'static/server_db/sources'
 ALLOWED_EXTENSIONS = set(['png', 'jpeg', 'jpg'])
-
-# TODO: If not exists create database folders
-#db.create_all()
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -36,7 +32,6 @@ class Tag(db.Model):
     __tablename__ = "tags"
     id = db.Column(db.Integer, primary_key=True)
     img_id = db.Column(db.Integer, db.ForeignKey('dbimgs.id'))
-    #img = db.relationship("DBImg")
     
     tag_name = db.Column(db.String(100), nullable=True)
     tag_prob = db.Column(db.Numeric(precision=5, asdecimal=True, decimal_return_scale=None))
@@ -44,14 +39,14 @@ class Tag(db.Model):
     def __repr__(self):
         return f'<Tag {self.id}>'    
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 @app.route('/')
 def index():
     entries = DBImg.query.order_by(DBImg.date_created).all()
     return render_template('index.html', entries=entries)
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_img():
@@ -67,15 +62,14 @@ def upload_img():
             flash('No selected file')
             return redirect(request.url)
         if img and allowed_file(img.filename):
-            # TODO: Process file to lmdb or whatever and save it to the database here
             # Save file
             filename = secure_filename(img.filename)
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             img.save(filepath)
             
             # Save thumbnail to disk and process computer vision
-            best_guesses = save_to_disk(app.config['UPLOAD_FOLDER'], filename)
-            print(" ".join([x[1] for x in best_guesses]))
+            best_guesses = save_thumbnaill_and_classify(app.config['UPLOAD_FOLDER'], filename)
+            # Set your threshold for the worst match you will tolerate for considering a tag to be valid
             threshold = 0
             best_guess = best_guesses[0][1]
             tags = [ Tag(tag_name=guess[1], tag_prob=guess[2]) for guess in best_guesses if guess[-1] > threshold]
@@ -92,10 +86,9 @@ def upload_img():
                 return "ERROR WITH DB FUNCS"
             return redirect('/')
         else:
-            flash('File must be a lossless format.')
+            flash('File must be a png or jpg format.')
             return redirect(request.url)
-    else:
-        
+    else:  
         return redirect('/')
 
     return '''
@@ -121,8 +114,6 @@ def delete(id):
         print(e)
         return 'ERROR ON DELETE'
 
-from flask import send_from_directory
-
 @app.route('/view/<int:id>')
 def view(id):
     entry_to_view = DBImg.query.get_or_404(id)
@@ -137,4 +128,10 @@ def uploaded_file(filename):
 if __name__ == "__main__":
     app.secret_key = "super secret key"
     db.create_all()
+    db_dir = app.config['UPLOAD_FOLDER']
+    thumbnails_dir = os.path.join(db_dir, ".thumbnails")
+    if (not os.path.exists(db_dir)) or (not os.path.exists(os.path.join(db_dir, ".thumbnails"))):
+        os.makedirs(db_dir, exist_ok=True)
+        os.makedirs(thumbnails_dir, exist_ok=True)
+
     app.run(debug=True)

@@ -5,6 +5,7 @@ from tensorflow.keras.applications.efficientnet import preprocess_input, decode_
 import numpy as np
 import os
 
+# Load the pre-built Keras EfficientNet model
 model = EfficientNetB0(weights='imagenet')
 
 # Set batch size for training and validation
@@ -14,7 +15,7 @@ THMBN_HEIGHT = 224
 THMBN_WIDTH = 224
 
 
-def save_to_disk(db_dir, img_name):
+def save_thumbnaill_and_classify(db_dir, img_name):
     img = image.load_img(f"{db_dir}/{img_name}", target_size=(224, 224))
     thumbnail = tf.image.resize(img, (THMBN_HEIGHT, THMBN_WIDTH))
     image.save_img(f"{db_dir}/.thumbnails/thb_{img_name}", thumbnail)
