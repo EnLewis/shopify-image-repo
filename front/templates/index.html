@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+<h1>DATABASE</h1>
+{% endblock %}
+
+{% block body %}
+<!-- <script src="index.js"></script> -->
+<div>
+  <form action="/upload" method="post" enctype="multipart/form-data">
+    <label for="img">SELECT IMAGE:</label>
+    <input type="file" id="img" name="img" accept="image/*">
+    <button class="button button1" name="button" value="upload" id="upload-btn">UPLOAD</button>
+  </form>
+  {% if guess %}
+  <p id="guess">It must be: {{ guess }}!</p>
+  {% endif %}
+</div>
+<div>
+  <table class="styled-table">
+    <thead>
+      <tr>
+        <th>Filename</th>
+        <th>Filepath</th>
+        <th>Tags</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    {% for entry in entries %}
+    <tr>
+      <td>{{ entry.fn }}</td>
+      <td>{{ entry.filepath}}</td>
+      <td alt="N/A">{{ entry.tags }}</td>
+      <td>
+        <a href="/delete/{{entry.id}}">Delete</a>
+        <br>
+        <a href="/view/{{entry.id}}">View</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}
