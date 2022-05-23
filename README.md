@@ -8,7 +8,7 @@ Here in lies a simple image webserver built using Flask for front/back end, tens
 ```bash
 pip install -r requirements.txt
 ```
-This will probably take some time since it needs to get the pre-build tensorflow models we use in this project
+This will probably take some time since it needs to get the pre-built tensorflow models we use in this project
 - Next navigate to the `front/` dir.
 ```bash
 cd front/
@@ -26,7 +26,7 @@ python3 app.py
 ```
 This startup up will likely throw a couple warnings from tensorflow depending on your system. Ignore them.
 - The server is hosted on "127.0.0.1:5000" so open up whatever browser you like and paste that address into the address bar, hit enter, and you should be greeted by the home screen.
-- On the home screen to upload an image (png or jpg format) press the browse button, select your image, then press upload. This will take a second or two to process.
+- On the home screen, to upload an image (png or jpg format) press the browse button, select your image, then press upload. This will take a second or two to process.
 ![Homepage Screenshot](https://github.com/EnLewis/shopify-image-repo/blob/main/refs/homepage.png)
 - Once the upload completes, if successful, it should add it to a table which displays the filename, remote filepath, and the servers best guess of what the photo you just uploaded was.
 ![Table View](https://github.com/EnLewis/shopify-image-repo/blob/main/refs/table.png)
@@ -66,7 +66,7 @@ except Exception as e:
     print(e)
     return "ERROR WITH DB FUNCS"
 ```
-The goal of this feature was to show a simple way of taking in an image and processing it so that it could be searched or referenced later based on its contents (tags) without having to reporocess it.
+The goal of this feature was to show a simple way of taking in an image and processing it so that it could be searched or referenced later based on its contents (tags) without having to reprocess it.
 #### Mosaic
 The mosaic features uses small images (32,32) as tiles to recreate a source image according the proximity of the tiles and the source image mean RGB values. The tile images are stored into an hdf5 file along with their meta data and RGB mean values as numpy arrays. The goal of this feature was to showcase a more efficient way of saving and retrieving very large numbers of image files in a data format that is very friendly to image processing and machine learning libraries like `keras`.
 #### Future Extensions
