@@ -31,7 +31,7 @@ This startup up will likely throw a couple warnings from tensorflow depending on
 - Once the upload completes, if successful, it should add it to a table which displays the filename, remote filepath, and the servers best guess of what the photo you just uploaded was.
 ![Table View](https://github.com/EnLewis/shopify-image-repo/blob/main/refs/table.png)
 - You can click `View` to view the image, and see the probabilities of what the server thinks exists in the image. You can also remove the image from the database via the delete button. This will remove the image from the remote database completely.
-![Image Preview](https://github.com/EnLewis/shopify-image-repo/blob/main/refs/preview.png)
+![Image Preview](https://github.com/EnLewis/shopify-image-repo/blob/main/refs/preview2.png)
 - From this page if you click the "View Image as Mosaic" button you will be brought to a page displaying the original image and an image mosaic constructed from the pixel values of the original image and the mean RGB values of images from a pre-loaded image tile database.
 ![Mosaic View](https://github.com/EnLewis/shopify-image-repo/blob/main/refs/mosaic.png)
 
