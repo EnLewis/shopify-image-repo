@@ -71,12 +71,12 @@ The goal of this feature was to show a simple way of taking in an image and proc
 The mosaic features uses small images (32,32) as tiles to recreate a source image according the proximity of the tiles and the source image mean RGB values. The tile images are stored into an hdf5 file along with their meta data and RGB mean values as numpy arrays. The goal of this feature was to showcase a more efficient way of saving and retrieving very large numbers of image files in a data format that is very friendly to image processing and machine learning libraries like `keras`.
 #### Future Extensions
 ##### Searchability
-The tags in the image SQL database provide a way to search for the content of images without having to reprocess the images themselves. The hdf5 format is also friendly to this sort of grouping and tagging. So if the application was expanded to want to search the tile databse as well it could be easily one by simply inserting images on paths based on their tags. `i.e: /animal/fourlegs/koala`.
+The tags in the image SQL database provide a way to search for the content of images without having to reprocess the images themselves. The hdf5 format is also friendly to this sort of grouping and tagging. So if the application needed to be expanded in order to search the tile databse as well it could easily be done by simply inserting images on paths based on their tags. `i.e: /animal/fourlegs/koala, /fruit/yellow/banana`.
 ##### Custom models
-Different machine learning models could be trained and plugged in depending on the users needs. This would simply require replacing the `model` global seen earlier.
+Different machine learning models could be trained and plugged in depending on the users needs. This would simply require replacing the `model` global seen earlier with another keras model or a custom user defined one. (NOTE: A couple other places would need changes as well to support the new model type.)
 ##### Adding data to the model
-The images that are uploaded are processed into thumbnails these thumbnails could be used to improve the model for classification.
+The images that are uploaded are processed into thumbnails. These thumbnails could be used to improve the model for classification.
 ##### Adding to the mosaic
 The thumbnails, or the images themselved could be resized and added to the tiles database to grow it overtime as the database grows.
 ##### More image processing
-Since the data inside the tile database is stored as numpy arrays, it is very friendly to any kind of image processing one desires. If the image database images where added to the hdf5 formatted file, those images could be very easily processed as well.
+Since the data inside the tile database can be loaded as numpy arrays, it is very friendly to any kind of image processing one desires. If the image database images where added to the hdf5 formatted file, those images could be very easily processed as well.
