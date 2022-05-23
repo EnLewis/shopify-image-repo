@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/view.css') }}">
+<h1>{{ entry.filename }}</h1>
+{% endblock %}
+
+{% block body %}
+<!-- <script src="index.js"></script> -->
+<img src="/static/server_db/sources/{{ entry.filename }}" alt="User Image" class="center" />
+<h1>Mosaic</h1>
+<img src="{{ uri }}" alt="Image Mosaic" class="center" />
+{% endblock %}

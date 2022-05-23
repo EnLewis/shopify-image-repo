@@ -8,6 +8,9 @@
 {% block body %}
 <!-- <script src="index.js"></script> -->
 <img src="/static/server_db/sources/{{ entry.filename }}" alt="User Image" class="center" />
+<div id="mosaic-button">
+    <a href="/view/{{entry.id}}/mosaic" class="button button1">Show image as mosaic</a>
+</div>
 <div>
     <table class="styled-table">
         <thead>
